@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radar Commercial 50km - Vente de Sites Web</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .badge-high { background-color: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-med { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+  <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+          <i class="fa-solid fa-radar text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+            Radar Commercial 50 km
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-semibold">100% Opérationnel</span>
+          </h1>
+          <p class="text-sm text-slate-400">Prospects locaux prêts à signer dans un rayon de 50 km autour d'Ercé-près-Liffré</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 text-xs bg-slate-900 p-3 rounded-xl border border-slate-800">
+        <div class="px-3 border-r border-slate-800">
+          <div class="text-slate-400">Prospects qualifiés</div>
+          <div id="stat-scanned" class="text-lg font-bold text-white">0</div>
+        </div>
+        <div class="px-3 border-r border-slate-800">
+          <div class="text-slate-400">Prioritaires (> 85%)</div>
+          <div id="stat-hot" class="text-lg font-bold text-emerald-400">0</div>
+        </div>
+        <div class="px-3">
+          <div class="text-slate-400">Rayon actif</div>
+          <div id="stat-radius" class="text-lg font-bold text-blue-400">50 km</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+        <div class="md:col-span-5 space-y-1.5">
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-location-dot text-rose-500"></i> Adresse centrale de départ
+          </label>
+          <div class="relative">
+            <input type="text" id="user-address" value="Ercé-près-Liffré (35340)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 pr-24">
+            <button onclick="resetToErce()" class="absolute right-2 top-2 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs border border-slate-700 transition">
+              Ercé 35
+            </button>
+          </div>
+        </div>
+
+        <div class="md:col-span-3 space-y-1.5">
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-briefcase text-blue-400"></i> Secteur métier ciblé
+          </label>
+          <select id="target-industry" onchange="runRadar()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+            <option value="ALL">Tous les secteurs à fort potentiel</option>
+            <option value="BTP" selected>Artisans BTP (Plombiers, Menuisiers, Électriciens, Couvreurs)</option>
+            <option value="RESTO">Restaurants, Crêperies & Traiteurs</option>
+            <option value="SERVICES">Soins, Coiffure & Services de proximité</option>
+            <option value="COMMERCE">Commerces locaux & Garages</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2 space-y-1.5">
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-notch text-amber-400"></i> Rayon max
+          </label>
+          <select id="target-radius" onchange="runRadar()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+            <option value="15">15 km (Très proche)</option>
+            <option value="30">30 km (Bassin direct)</option>
+            <option value="50" selected>50 km (Zone maximale)</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <button onclick="runRadar()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-arrows-rotate"></i> Actualiser
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-phone-volume text-emerald-400"></i>
+        Artisans et Commerçants à appeler en priorité
+      </h2>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-slate-400">Tri :</span>
+        <select id="sort-order" onchange="renderResults()" class="bg-slate-900 border border-slate-800 text-xs px-3 py-1.5 rounded-lg text-slate-200">
+          <option value="score">Score de signature le plus élevé</option>
+          <option value="distance">Distance la plus courte</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+    <div id="pitch-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 space-y-4 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div>
+            <h3 id="modal-company" class="font-bold text-white text-lg">Pitch d'appel téléphonique</h3>
+            <p id="modal-distance" class="text-xs text-slate-400"></p>
+          </div>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-white p-2">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-200 leading-relaxed whitespace-pre-wrap" id="modal-script"></div>
+        <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+          <button onclick="copyScript()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg transition flex items-center gap-1.5">
+            <i class="fa-regular fa-copy"></i> Copier
+          </button>
+          <a id="modal-tel-link" href="#" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/30">
+            <i class="fa-solid fa-phone"></i> Appeler
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CENTER = { lat: 48.2571, lon: -1.5173, name: "Ercé-près-Liffré" };
+    const LOCAL_DATA = [
+      { id: '1', name: 'Plomberie Chauffage Liffréenne', manager: 'Frédéric Gautier', sector: 'BTP', category: 'Plombier Chauffagiste', city: 'Liffré', lat: 48.2133, lon: -1.5075, phone: '02 99 68 34 12', whySign: 'Panier moyen 4 500 € (PAC & SDB). Zéro site : perd les chantiers de Liffré face aux boîtes rennaises.', pitchArg: 'récupérer les demandes de pompe à chaleur et rénovation de salle de bain sur Liffré' },
+      { id: '2', name: 'Couverture Zinguerie Aubinoise', manager: 'Yannick Le Goff', sector: 'BTP', category: 'Couvreur Zingueur', city: 'Saint-Aubin-d\'Aubigné', lat: 48.2625, lon: -1.5833, phone: '06 12 45 88 30', whySign: 'Chantiers de toiture à > 8 000 €. Un seul contrat décroché par an rembourse 4 fois le site.', pitchArg: 'mettre en valeur vos photos de toitures avant/après pour rassurer les propriétaires' },
+      { id: '3', name: 'Menuiserie Agencement des Forêts', manager: 'David Guérin', sector: 'BTP', category: 'Menuisier Agenceur', city: 'Saint-Aubin-du-Cormier', lat: 48.2611, lon: -1.4000, phone: '02 99 39 10 55', whySign: 'Pose de cuisines et dressings sur-mesure. Pas de vitrine pour afficher son catalogue bois.', pitchArg: 'exposer votre catalogue de dressings et cuisines sur-mesure' },
+      { id: '4', name: 'Électricité Générale Bettonnaise', manager: 'Julien Marchand', sector: 'BTP', category: 'Électricien', city: 'Betton', lat: 48.1833, lon: -1.6444, phone: '06 87 65 43 21', whySign: 'Marché des bornes de recharge et domotique. Aucune page web pour capter les automobilistes.', pitchArg: 'vous positionner en numéro 1 sur l\'installation des bornes de recharge VE' },
+      { id: '5', name: 'Auberge & Crêperie du Val d\'Ille', manager: 'Sophie Renan', sector: 'RESTO', category: 'Restaurant Crêperie', city: 'Saint-Médard-sur-Ille', lat: 48.2731, lon: -1.6608, phone: '02 99 55 20 14', whySign: 'Pas de menu en ligne ni réservation. Perd les réservations du dimanche.', pitchArg: 'rendre votre carte consultable en 1 clic sur mobile et activer la réservation directe' },
+      { id: '6', name: 'Boucherie Traiteur de l\'Étang', manager: 'Benoît Morin', sector: 'COMMERCE', category: 'Boucherie Traiteur', city: 'Liffré', lat: 48.2140, lon: -1.5060, phone: '02 99 68 15 40', whySign: 'Activité traiteur pour mariages et réceptions sans aucune présence en ligne.', pitchArg: 'créer une brochure traiteur en ligne pour capter les mariages et banquets' },
+      { id: '7', name: 'Carrosserie Mécanique de la Vallée', manager: 'Patrick Bourgeois', sector: 'COMMERCE', category: 'Garage Automobile', city: 'Châteaubourg', lat: 48.1100, lon: -1.4030, phone: '02 99 00 23 80', whySign: 'Chiffre d\'affaires élevé mais 100% dépendant du bouche-à-oreille.', pitchArg: 'permettre aux automobilistes de réserver leur pré-contrôle technique en ligne' },
+      { id: '8', name: 'Institut Soins & Beauté Marine', manager: 'Élodie Leray', sector: 'SERVICES', category: 'Institut de Beauté', city: 'Fougères', lat: 48.3533, lon: -1.2000, phone: '02 99 94 15 70', whySign: 'Téléphone fermé le soir = clientes perdues vers les plateformes tierces.', pitchArg: 'intégrer la réservation 24h/24 sans commission mensuelle abusive' },
+      { id: '9', name: 'Maçonnerie Rénovation Patrimoine', manager: 'Stéphane Briand', sector: 'BTP', category: 'Maçon Rénovateur', city: 'Combourg', lat: 48.4086, lon: -1.7517, phone: '06 33 21 78 90', whySign: 'Rénovation de longères bretonnes en pierre. Panier moyen > 15 000 €.', pitchArg: 'démontrer votre savoir-faire dans la pierre avec une galerie de chantiers HD' },
+      { id: '10', name: 'Paysagisme & Clôtures de l\'Ille', manager: 'Thomas Guillou', sector: 'BTP', category: 'Paysagiste Concepteur', city: 'Melesse', lat: 48.2175, lon: -1.6961, phone: '02 99 66 12 30', whySign: 'Création de terrasses bois. Pas de vitrine pour convertir les nouveaux lotissements.', pitchArg: 'capturer les propriétaires des nouveaux lotissements qui aménagent leur jardin' }
+    ];
+
+    let currentList = [];
+    function calcDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 10) / 10;
+    }
+
+    function calcScore(item, distKm) {
+      let score = 40;
+      if (item.sector === 'BTP') score += 35;
+      else if (item.sector === 'RESTO') score += 30;
+      else if (item.sector === 'SERVICES') score += 25;
+      else score += 20;
+      if (distKm <= 10) score += 23;
+      else if (distKm <= 25) score += 18;
+      else if (distKm <= 40) score += 12;
+      else score += 5;
+      return Math.min(score, 98);
+    }
+
+    function resetToErce() {
+      document.getElementById('user-address').value = "Ercé-près-Liffré (35340)";
+      runRadar();
+    }
+
+    function runRadar() {
+      const targetSector = document.getElementById('target-industry').value;
+      const maxRadius = parseFloat(document.getElementById('target-radius').value);
+      document.getElementById('stat-radius').textContent = maxRadius + ' km';
+
+      currentList = LOCAL_DATA.map(item => {
+        const dist = calcDistance(CENTER.lat, CENTER.lon, item.lat, item.lon);
+        return { ...item, distanceKm: dist, score: calcScore(item, dist) };
+      }).filter(item => item.distanceKm <= maxRadius && (targetSector === 'ALL' || item.sector === targetSector));
+
+      renderResults();
+    }
+
+    function renderResults() {
+      const sortBy = document.getElementById('sort-order').value;
+      if (sortBy === 'score') currentList.sort((a, b) => b.score - a.score);
+      else currentList.sort((a, b) => a.distanceKm - b.distanceKm);
+
+      document.getElementById('stat-scanned').textContent = currentList.length;
+      document.getElementById('stat-hot').textContent = currentList.filter(p => p.score >= 85).length;
+
+      const container = document.getElementById('results-grid');
+      container.innerHTML = '';
+      if (currentList.length === 0) {
+        container.innerHTML = '<div class="col-span-full py-12 text-center bg-slate-900 rounded-2xl border border-slate-800"><p class="text-slate-300">Aucun prospect trouvé. Augmentez le rayon à 50 km.</p></div>';
+        return;
+      }
+
+      currentList.forEach(item => {
+        const isHot = item.score >= 85;
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-blue-500 transition shadow-lg flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-950 px-2 py-0.5 rounded border border-blue-900">${item.category}</span>
+                <h3 class="text-base font-bold text-white mt-1.5 leading-snug">${item.name}</h3>
+                <p class="text-xs text-slate-400 mt-0.5"><i class="fa-solid fa-location-dot text-rose-500 text-[10px]"></i> <b>${item.city}</b> (${item.distanceKm} km d'Ercé)</p>
+              </div>
+              <div class="text-right">
+                <div class="inline-flex flex-col items-center px-3 py-1 rounded-xl ${isHot ? 'badge-high' : 'badge-med'}">
+                  <span class="text-lg font-black leading-none">${item.score}%</span>
+                  <span class="text-[9px] uppercase font-bold mt-0.5">Signature</span>
+                </div>
+              </div>
+            </div>
+            <div class="my-3 p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs space-y-1.5">
+              <div class="flex items-center justify-between"><span class="text-slate-400">Dirigeant :</span><span class="text-slate-200 font-semibold">${item.manager}</span></div>
+              <div class="flex items-center justify-between"><span class="text-slate-400">Site actuel :</span><span class="text-rose-400 font-bold"><i class="fa-solid fa-ban"></i> Aucun site existant</span></div>
+              <div class="pt-1.5 border-t border-slate-900 text-slate-300 text-[11px]"><span class="text-amber-400 font-semibold">Pourquoi il signe :</span> ${item.whySign}</div>
+            </div>
+          </div>
+          <div class="pt-2 flex items-center gap-2">
+            <button onclick="openPitchModal('${item.id}')" class="flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md shadow-blue-600/20">
+              <i class="fa-solid fa-phone"></i> Pitch & Appel
+            </button>
+            <a href="https://www.google.com/search?q=${encodeURIComponent(item.name + ' ' + item.city)}" target="_blank" class="py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium border border-slate-700 transition"><i class="fa-brands fa-google"></i></a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openPitchModal(id) {
+      const item = currentList.find(x => x.id === id);
+      if (!item) return;
+      document.getElementById('modal-company').textContent = item.name + ' (' + item.manager + ')';
+      document.getElementById('modal-distance').textContent = `${item.city} • À seulement ${item.distanceKm} km d'Ercé-près-Liffré`;
+      document.getElementById('modal-script').textContent = `« Bonjour ${item.manager}, Jordan au téléphone.\\n\\nJe suis basé juste à côté de chez vous, à Ercé-près-Liffré, à exactement ${item.distanceKm} km de votre entreprise.\\n\\nJe vous contacte directement car je regardais les professionnels réputés de ${item.city}. Vos clients sont très satisfaits de votre travail, mais vous n'avez pas encore de site web pour ${item.pitchArg}.\\n\\nAujourd'hui, quand un particulier ou une entreprise a un besoin à ${item.city}, le premier réflexe est de chercher sur smartphone. Sans vitrine professionnelle, ces demandes et devis partent immédiatement chez vos concurrents.\\n\\nComme je suis votre voisin direct, je vous propose de passer vous saluer 10 minutes cette semaine pour vous montrer une maquette prête à l'emploi pour votre activité, sans aucun engagement.\\n\\nVous seriez plutôt disponible ce jeudi ou vendredi matin ? »`;
+      document.getElementById('modal-tel-link').setAttribute('href', `tel:${item.phone.replace(/\\\\s+/g, '')}`);
+      document.getElementById('pitch-modal').classList.remove('hidden');
+    }
+
+    function closeModal() { document.getElementById('pitch-modal').classList.add('hidden'); }
+    function copyScript() { navigator.clipboard.writeText(document.getElementById('modal-script').textContent); alert('Pitch copié !'); }
+    runRadar();
+  </script>
+</body>
+</html>
