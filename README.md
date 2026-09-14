@@ -1,8 +1,11 @@
-# Gemini Test Prospection - Radar 50 km (Autocomplétion BAN & LocalStorage)
+# Gemini Test Prospection - Radar 50 km (Calcul Réel des Coordonnées)
 
-Application commerciale de prospection locale pour vendre des sites web aux artisans et commerçants dans un rayon de 50 km.
+Application commerciale de prospection locale pour vendre des sites web aux artisans et commerçants dans un rayon strict de 50 km.
 
-## Nouveautés
-- **Autocomplétion des villes à la volée** : Connexion en direct à l'API Base Adresse Nationale (BAN). Dès que vous tapez les premières lettres d'une commune, une liste déroulante interactive s'affiche.
-- **Recalcul automatique instantané** : En cliquant sur une ville suggérée, le point central GPS est mis à jour, toutes les distances en kilomètres sont recalculées et les prospects sont reclassés en direct.
-- **Intégration SIRENE & LocalStorage** : Les fiches d'entreprises restent mémorisées sur votre machine pour une utilisation rapide et fluide.
+## Correctifs appliqués
+- **Élimination de l'anomalie « Paris à 33 km »** :
+  - Remplacement de la règle de repli par défaut qui réassignait arbitrairement les coordonnées de Rennes aux villes non reconnues.
+  - Résolution réelle des coordonnées de Paris (~350 km de Médréac), excluant automatiquement ces sièges parisiens du rayon de 50 km.
+  - Exclusion automatique des sièges sociaux parisiens et hors-département lors des scans SIRENE pour ne conserver que les artisans locaux.
+- **Ajout des artisans de l'Ouest d'Ille-et-Vilaine** : Intégration directe des artisans situés autour de Médréac (35360), Montauban-de-Bretagne, Bédée, Saint-Méen-le-Grand et Montfort-sur-Meu.
+- **Clarification du bouton Réinitialiser** : Indication explicite de réinitialisation vers Ercé-près-Liffré sans confusion avec la commune sélectionnée.
