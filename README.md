@@ -1,9 +1,8 @@
-# Gemini Test Prospection - Radar Commercial 50 km
+# Gemini Test Prospection - Radar 50 km (Autocomplétion BAN & LocalStorage)
 
-Application d'aide à la prospection locale pour la vente de sites internet auprès des artisans et commerçants.
+Application commerciale de prospection locale pour vendre des sites web aux artisans et commerçants dans un rayon de 50 km.
 
-## Fonctionnalités
-- Scan automatique dans un rayon de 50 km autour d'Ercé-près-Liffré (35)
-- Calcul de probabilité de signature (artisan sans site web, fort panier moyen, hyper-proximité)
-- Générateur de pitch téléphonique personnalisé mentionnant la distance exacte
-- Accessible directement en ouvrant `index.html` dans n'importe quel navigateur
+## Nouveautés
+- **Autocomplétion des villes à la volée** : Connexion en direct à l'API Base Adresse Nationale (BAN). Dès que vous tapez les premières lettres d'une commune, une liste déroulante interactive s'affiche.
+- **Recalcul automatique instantané** : En cliquant sur une ville suggérée, le point central GPS est mis à jour, toutes les distances en kilomètres sont recalculées et les prospects sont reclassés en direct.
+- **Intégration SIRENE & LocalStorage** : Les fiches d'entreprises restent mémorisées sur votre machine pour une utilisation rapide et fluide.
